@@ -23,7 +23,7 @@
             // The string may contain the words for digits too,
             // e.g. "one" instead of one.
             // We can't replace because we may break "fused" numbers
-            // e.g. "twoone" should be 21
+            // e.g. "twone" should be 21
 
             // Create a sliding window and check to see when we start
             // with the first digit - "zzone" -> "zzone", "zone", "one".
