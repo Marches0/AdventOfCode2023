@@ -13,7 +13,7 @@ namespace Day3
         {
             Schematic schematic = new()
             {
-                Items = new IEngineItem[lines.Length, lines[0].Length]
+                ItemGrid = new IEngineItem[lines.Length, lines[0].Length]
             };
             
             for(int i = 0; i < lines.Length; i++)
@@ -31,22 +31,26 @@ namespace Day3
 
                     if (itemType == SchematicItem.Empty)
                     {
-                        schematic.Items[i, j] = new Empty();
+                        schematic.ItemGrid[i, j] = new Empty();
                         currentNumber = new Number();
                     }
                     else if (itemType == SchematicItem.Symbol)
                     {
-                        schematic.Items[i, j] = new Symbol();
+                        schematic.ItemGrid[i, j] = new Symbol();
                         currentNumber = new Number();
                     }
                     else
                     {
                         currentNumber.AddDigit(currentState);
-                        schematic.Items[i, j] = currentNumber;
+                        schematic.ItemGrid[i, j] = currentNumber;
                     }
+
+                    schematic.Items.Add(schematic.ItemGrid[i, j]);
                 }
             }
 
+            // Numbers are duplicated; remove them.
+            schematic.Items = schematic.Items.Distinct().ToList();
             return schematic;
         }
 
@@ -57,12 +61,12 @@ namespace Day3
                 return SchematicItem.Number;
             }
             
-            if (c == '.')
+            if (c == '*')
             {
-                return SchematicItem.Empty;
+                return SchematicItem.Symbol;
             }
 
-            return SchematicItem.Symbol;
+            return SchematicItem.Empty;
         }
     }
 
@@ -75,7 +79,9 @@ namespace Day3
 
     internal class Schematic
     {
-        public IEngineItem[,] Items { get; set; }
+        public IEngineItem[,] ItemGrid { get; set; }
+
+        public List<IEngineItem> Items { get; set; } = new();
     }
 
     internal interface IEngineItem
@@ -87,11 +93,6 @@ namespace Day3
     {
         public int Value { get; set; }
 
-        /// <summary>
-        ///  Whether or not this number is a part number. Always <see langword="false"/> after initial file parsing. (bad)
-        /// </summary>
-        public bool IsPartNumber { get; set; } = false;
-
         public void AddDigit(char c)
         {
             Value = Value * 10 + int.Parse(c.ToString());
@@ -99,7 +100,7 @@ namespace Day3
 
         public override string ToString()
         {
-            return $"{Value} - {IsPartNumber}";
+            return Value.ToString();
         }
     }
 
@@ -113,9 +114,11 @@ namespace Day3
 
     internal class Symbol : IEngineItem
     {
+        public List<Number> Neighbours { get; set; } = new();
+
         public override string ToString()
         {
-            return "Symbol";
+            return $"Symbol {Neighbours.Count}";
         }
     }
 }

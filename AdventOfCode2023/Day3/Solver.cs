@@ -6,45 +6,45 @@
         {
             var file = File.ReadAllLines("day3_input.txt");
             Schematic schematic = new SchematicReader().Read(file);
-            var sum = GetPartNumbers(schematic)
-                .Sum();
+            SetNeighbours(schematic);
+
+            var gearRatios = schematic.Items
+                .Where(i => i is Symbol s && s.Neighbours.Count == 2)
+                .Cast<Symbol>()
+                .Select(s => s.Neighbours[0].Value * s.Neighbours[1].Value);
+
+            int sum = gearRatios.Sum();
 
             Console.WriteLine(sum);
         }
 
-        private List<int> GetPartNumbers(Schematic schematic)
+        private List<int> SetNeighbours(Schematic schematic)
         {
             List<int> partNumbers = new();
 
             // A number is a part number if any of its digits
             // in the schematic are next to a symbol. Includes diagonals.
-            var height = schematic.Items.GetLength(0);
-            var width = schematic.Items.GetLength(1);
+            var height = schematic.ItemGrid.GetLength(0);
+            var width = schematic.ItemGrid.GetLength(1);
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    IEngineItem current = schematic.Items[i, j];
-                    if (current is not Number number || number.IsPartNumber)
+                    IEngineItem current = schematic.ItemGrid[i, j];
+                    if (current is not Symbol symbol)
                     {
-                        // IsPartNumber = true are already checked - don't need to repeat
                         continue;
                     }
 
-                    if (NextToSymbol(i, j))
-                    {
-                        // Bit hacky, but I did this to myself by using
-                        // multidimensional arrays
-                        number.IsPartNumber = true;
-                        partNumbers.Add(number.Value);
-                    }
+                    symbol.Neighbours = NeighbouringNumbers(i, j);
                 }
             }
 
             return partNumbers;
 
-            bool NextToSymbol(int y, int x)
+            List<Number> NeighbouringNumbers(int y, int x)
             {
+                List<Number> neighbours = new List<Number>();
                 // Ranges to check. Inclusive.
                 int minY = Clamp(y - 1, height);
                 int maxY = Clamp(y + 1, height);
@@ -55,14 +55,14 @@
                 { 
                     for (int j = minX; j <= maxX; j++)
                     {
-                        if (schematic.Items[i, j] is Symbol)
+                        if (schematic.ItemGrid[i, j] is Number n)
                         {
-                            return true;
+                            neighbours.Add(n);
                         }
                     }
                 }
 
-                return false;
+                return neighbours.Distinct().ToList();
             }
 
             static int Clamp(int val, int max)
