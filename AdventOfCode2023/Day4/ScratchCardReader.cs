@@ -26,6 +26,7 @@ namespace Day4
             {
                 WinningNumbers = numberGroups[0].Select(int.Parse).ToList(),
                 ScratchedNumbers = numberGroups[1].Select(int.Parse).ToList(),
+                Copies = 1
             };
         }
     }
@@ -34,5 +35,6 @@ namespace Day4
     {
         public List<int> WinningNumbers { get; set; }
         public List<int> ScratchedNumbers { get; set; }
+        public int Copies { get; set; }
     }
 }
