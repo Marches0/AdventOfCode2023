@@ -12,16 +12,26 @@ internal class AlmanacReader
     public Almanac Read(string[] lines)
     {
         // seeds: 79 14 55 13
-        var seeds = lines[0].SkipWhile(c => c != ':')
+        var seedNumbers = lines[0].SkipWhile(c => c != ':')
             .Skip(1)
             .CollapseToString()
             .GetNumbers(" ");
+
+        // They're actually paired by [start, range]
+        var seedRange = seedNumbers.Chunk(2)
+            .ToList()
+            .Select(g => new SeedRange()
+            {
+                Start = g[0],
+                Range = g[1]
+            })
+            .ToList();
 
         // The maps are in the order we'd want to traverse them, so just add them in that order
         // and don't worry about the details
         return new Almanac()
         {
-            Seeds = seeds,
+            SeedRanges = seedRange,
             Maps = ReadMaps(lines.Skip(2)) // Skip the seeds + empty line after it
         };
     }
@@ -87,14 +97,38 @@ internal class AlmanacReader
 
 internal class Almanac
 {
-    public List<long> Seeds { get; set; }
+    public List<SeedRange> SeedRanges { get; set; }
     public List<MapCollection> Maps { get; set; }
-
 
     public long GetLocation(long seedNumber)
     {
         return Maps
             .Aggregate(seedNumber, (current, map) => map.MapSource(current));
+    }
+
+    public long GetSeed(long location)
+    {
+        return Maps
+            .Reverse<MapCollection>()
+            .Aggregate(location, (current, map) => map.MapDestination(current));
+    }
+
+    public bool ContainsSeed(long seed)
+    {
+        return SeedRanges
+            .Any(r => seed >= r.Start && seed <= r.Max);
+    }
+}
+
+internal class SeedRange
+{
+    public long Start { get; set; }
+    public long Range { get; set; }
+    public long Max => Start + Range;
+
+    public override string ToString()
+    {
+        return $"{Start} {Range} $({Max})";
     }
 }
 
@@ -111,6 +145,14 @@ internal class MapCollection
             .Where(s => s != null)
             .FirstOrDefault() ?? source;
     }
+
+    public long MapDestination(long destination)
+    {
+        return Maps
+            .Select(m => m.MapDestination(destination))
+            .Where(d => d != null)
+            .FirstOrDefault() ?? destination;
+    }
 }
 
 internal class Map
@@ -120,6 +162,7 @@ internal class Map
     public long Range { get; set; }
 
     private long MaxSource => SourceStart + Range;
+    private long MaxDestination => DestinationStart + Range;
 
     public long? MapSource(long source)
     {
@@ -130,5 +173,21 @@ internal class Map
 
         var distance = source - SourceStart;
         return DestinationStart + distance;
+    }
+
+    public long? MapDestination(long destination)
+    {
+        if (destination < DestinationStart || destination > MaxDestination)
+        {
+            return null;
+        }
+
+        var distance = destination - DestinationStart;
+        return SourceStart + distance;
+    }
+
+    public override string ToString()
+    {
+        return $"{DestinationStart} {SourceStart} {Range}";
     }
 }
