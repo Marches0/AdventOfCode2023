@@ -17,4 +17,11 @@ public static class StringExtensions
             .TakeWhile(c => char.IsDigit(c))
             .CollapseToString();
     }
+
+    public static List<long> GetNumbers(this string value, string delimiter)
+    {
+        return value.Split(delimiter, StringSplitOptions.RemoveEmptyEntries)
+            .Select(long.Parse)
+            .ToList();
+    }
 }
