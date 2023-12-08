@@ -12,10 +12,21 @@ internal class BoatRaceReader
     public List<BoatRace> Read(string[] lines)
     {
         var records = lines[0].SkipPastColon()
-            .GetNumbers(" ");
+            .Where(char.IsDigit)
+            .CollapseToString();
 
         var distances = lines[1].SkipPastColon()
-            .GetNumbers(" ");
+            .Where(char.IsDigit)
+            .CollapseToString();
+
+        return new List<BoatRace>()
+        {
+            new()
+            {
+                DistanceRecord = long.Parse(distances),
+                Time = long.Parse(records)
+            }
+        };
 
         return records.Zip(distances)
             .Select(x => new BoatRace()
