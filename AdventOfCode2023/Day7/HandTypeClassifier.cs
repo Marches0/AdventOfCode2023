@@ -29,31 +29,6 @@ internal class HandTypeClassifier
             }
         }
 
-        // Jokers will be present in all sets - the only ones that matter are the ones in the biggest
-        // set, since we just need the highest type.
-        // If there is a tie, pick any.
-        // need to spread them?
-        var largestSize = cardGroups.Max(g => g.Count());
-
-        bool usedJokers = false;
-        for(int i = 0; i < cardGroups.Count; i++)
-        {
-            if (cardGroups[i].Count() != largestSize || usedJokers)
-            {
-                // Removes the joker and packs it back
-                // into a single group
-                cardGroups[i] = cardGroups[i]
-                    .Where(c => c != Card.Joker)
-                    .GroupBy(c => c)
-                    .Single();
-            }
-            else
-            {
-                // This group was left alone, thus consuming the jokers
-                usedJokers = true;
-            }
-        }
-
         // Five of a kind, where all five cards have the same label: AAAAA
         if (cardGroups.Count == 1)
         {

@@ -23,11 +23,6 @@ namespace Day7
                 .Sum();
 
             Console.WriteLine(winnings);
-            
-            foreach(var h in order)
-            {
-                Console.WriteLine(h);
-            }
         }
     }
 
