@@ -24,4 +24,11 @@ public static class StringExtensions
             .Select(long.Parse)
             .ToList();
     }
+
+    public static string SkipPastColon(this string value)
+    {
+        return value.SkipWhile(c => c != ':')
+            .Skip(1)
+            .CollapseToString();
+    }
 }
