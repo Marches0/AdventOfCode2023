@@ -23,6 +23,11 @@ namespace Day7
                 .Sum();
 
             Console.WriteLine(winnings);
+            
+            foreach(var h in order)
+            {
+                Console.WriteLine(h);
+            }
         }
     }
 
@@ -52,7 +57,7 @@ namespace Day7
                 return 0;
             }
 
-            if(decider.First > decider.Second)
+            if (decider.First > decider.Second)
             {
                 return 1;
             }

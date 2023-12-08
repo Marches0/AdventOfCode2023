@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Runner;
+﻿namespace Runner;
 
 internal class HandTypeClassifier
 {
@@ -13,6 +7,52 @@ internal class HandTypeClassifier
         var cardGroups = cards
             .GroupBy(c => c)
             .ToList();
+
+        var jokers = cardGroups.SingleOrDefault(g => g.Key == Card.Joker);
+        if (jokers != null)
+        {
+            // If the best group is a Joker, then fall back to the second group
+            var bestGroups = cardGroups
+                .OrderByDescending(g => g.Count())
+                .Take(2)
+                .Select(g => g.Key)
+                .ToList();
+
+            // Could be all jokers - in which case leave it
+            if (bestGroups.Count == 2)
+            {
+                Card mostCommon = bestGroups[0] == Card.Joker ? bestGroups[1] : bestGroups[0];
+                var replacedGroup = cards.Select(c => c == Card.Joker ? mostCommon : c);
+                cardGroups = replacedGroup
+                    .GroupBy(c => c)
+                    .ToList();
+            }
+        }
+
+        // Jokers will be present in all sets - the only ones that matter are the ones in the biggest
+        // set, since we just need the highest type.
+        // If there is a tie, pick any.
+        // need to spread them?
+        var largestSize = cardGroups.Max(g => g.Count());
+
+        bool usedJokers = false;
+        for(int i = 0; i < cardGroups.Count; i++)
+        {
+            if (cardGroups[i].Count() != largestSize || usedJokers)
+            {
+                // Removes the joker and packs it back
+                // into a single group
+                cardGroups[i] = cardGroups[i]
+                    .Where(c => c != Card.Joker)
+                    .GroupBy(c => c)
+                    .Single();
+            }
+            else
+            {
+                // This group was left alone, thus consuming the jokers
+                usedJokers = true;
+            }
+        }
 
         // Five of a kind, where all five cards have the same label: AAAAA
         if (cardGroups.Count == 1)

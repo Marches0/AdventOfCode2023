@@ -36,7 +36,7 @@ internal class CamelCardReader
             '8' => Card.Eight,
             '9' => Card.Nine,
             'T' => Card.Ten,
-            'J' => Card.Jack,
+            'J' => Card.Joker,
             'Q' => Card.Queen,
             'K' => Card.King,
             'A' => Card.Ace,
@@ -47,7 +47,8 @@ internal class CamelCardReader
 
 internal enum Card
 {
-    Two = 2,
+    Joker = 1,
+    Two,
     Three,
     Four,
     Five,
@@ -66,7 +67,7 @@ internal class Hand
 {
     public List<Card> Cards { get; set; }
     public HandType HandType { get; set; }
-    public int Bid { get; set; }
+    public long Bid { get; set; }
     public string CardsRaw { get; set; }
 
 
