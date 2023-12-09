@@ -31,7 +31,7 @@
                 sequences.Add(current);
             } while (!IsFinalStep(current));
 
-            return GetNextValueSum(sequences);
+            return GetPreviousValue(sequences);
         }
 
         private List<long> GetDifferenceReading(List<long> reading)
@@ -46,7 +46,7 @@
             return reading.All(r => r == 0);
         }
 
-        private long GetNextValueSum(List<List<long>> sequences)
+        private long GetNextValue(List<List<long>> sequences)
         {
             for (int i = sequences.Count - 1; i > 0; i--)
             {
@@ -58,6 +58,20 @@
             return sequences
                 .First()
                 .Last();
+        }
+
+        private long GetPreviousValue(List<List<long>> sequences)
+        {
+            for (int i = sequences.Count - 1; i > 0; i--)
+            {
+                var startVal = sequences[i].First();
+                var nextSequence = sequences[i - 1];
+                nextSequence.Insert(0, nextSequence.First() - startVal);
+            }
+
+            return sequences
+                .First()
+                .First();
         }
     }
 }
