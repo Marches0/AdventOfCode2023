@@ -8,15 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Day1\Day1.csproj" />
-	<ProjectReference Include="..\Day2\Day2.csproj" />
-	<ProjectReference Include="..\Day3\Day3.csproj" />
-	<ProjectReference Include="..\Day4\Day4.csproj" />
-	<ProjectReference Include="..\Day5\Day5.csproj" />
-	<ProjectReference Include="..\Day6\Day6.csproj" />
-	<ProjectReference Include="..\Day7\Day7.csproj" />
-	<ProjectReference Include="..\Day8\Day8.csproj" />
-	<ProjectReference Include="..\Day9\Day9.csproj" />
+    <ProjectReference Include="..\Day1\Day01.csproj" />
+	<ProjectReference Include="..\Day2\Day02.csproj" />
+	<ProjectReference Include="..\Day3\Day03.csproj" />
+	<ProjectReference Include="..\Day4\Day04.csproj" />
+	<ProjectReference Include="..\Day5\Day05.csproj" />
+	<ProjectReference Include="..\Day6\Day06.csproj" />
+	<ProjectReference Include="..\Day7\Day07.csproj" />
+	<ProjectReference Include="..\Day8\Day08.csproj" />
+	<ProjectReference Include="..\Day9\Day09.csproj" />
+	<ProjectReference Include="..\Day10\Day10.csproj" />
   </ItemGroup>
 
 </Project>
