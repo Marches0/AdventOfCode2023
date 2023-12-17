@@ -34,7 +34,9 @@ internal class UniverseReader
         {
             if (startArrangement[i].All(c => c == SpaceType.Empty))
             {
-                startArrangement.Insert(i + 1, EmptyRow(startArrangement[i].Count));
+                startArrangement[i] = startArrangement[i]
+                    .Select(_ => SpaceType.Expanded)
+                    .ToList();
             }
         }
 
@@ -44,7 +46,7 @@ internal class UniverseReader
             {
                 foreach (var row in startArrangement)
                 {
-                    row.Insert(i + 1, SpaceType.Empty);
+                    row[i] = SpaceType.Expanded;
                 }
             }
         }
@@ -73,7 +75,7 @@ internal class UniverseReader
     {
         return space
             .Select(s => s[index])
-            .All(c => c == SpaceType.Empty);
+            .All(c => c == SpaceType.Empty || c == SpaceType.Expanded);
     }
 
     private List<SpaceItem> GetSpaceItems(List<List<SpaceType>> arrangement)
@@ -81,7 +83,7 @@ internal class UniverseReader
         List<SpaceItem> items = new();
         int galaxyId = 1;
 
-        for(int i = 0; i < arrangement.Count; i++)
+        for (int i = 0; i < arrangement.Count; i++)
         {
             for (int j = 0; j < arrangement[i].Count; j++)
             {
@@ -105,7 +107,8 @@ internal class UniverseReader
 internal enum SpaceType
 {
     Empty = 1,
-    Galaxy = 2
+    Galaxy = 2,
+    Expanded = 3,
 }
 
 internal class SpaceItem
@@ -138,8 +141,8 @@ internal class Universe
 
     private string ContentString(SpaceType content)
     {
-        return content == SpaceType.Empty
-            ? "."
-            : "#";
+        return content == SpaceType.Galaxy
+            ? "#"
+            : ".";
     }
 }
