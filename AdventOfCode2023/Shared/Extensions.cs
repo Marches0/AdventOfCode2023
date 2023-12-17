@@ -32,3 +32,36 @@ public static class StringExtensions
             .CollapseToString();
     }
 }
+
+public static class IntExtensions
+{
+    public static int IndexClamp(this int index, int max)
+    {
+        if (index < 0)
+        {
+            return 0;
+        }
+
+        if (index >= max)
+        {
+            return max - 1;
+        }
+
+        return index;
+    }
+
+    public static bool InIndexRange(this int index, int max)
+    {
+        if (index < 0)
+        {
+            return false;
+        }
+
+        if (index > max)
+        {
+            return false;
+        }
+
+        return true;
+    }
+}

@@ -1,4 +1,6 @@
-﻿namespace Day3
+﻿using Shared;
+
+namespace Day3
 {
     public class Solver
     {
@@ -46,10 +48,10 @@
             {
                 List<Number> neighbours = new List<Number>();
                 // Ranges to check. Inclusive.
-                int minY = Clamp(y - 1, height);
-                int maxY = Clamp(y + 1, height);
-                int minX = Clamp(x - 1, width);
-                int maxX = Clamp(x + 1, width);
+                int minY = (y - 1).IndexClamp(height);
+                int maxY = (y + 1).IndexClamp(height);
+                int minX = (x - 1).IndexClamp(width);
+                int maxX = (x + 1).IndexClamp(width);
                 // Clamp so we don't go out of the index's bounds
                 for (int i = minY; i <= maxY; i++)
                 { 
@@ -63,21 +65,6 @@
                 }
 
                 return neighbours.Distinct().ToList();
-            }
-
-            static int Clamp(int val, int max)
-            {
-                if (val < 0)
-                {
-                    return 0;
-                }
-
-                if (val >= max)
-                {
-                    return max - 1;
-                }
-
-                return val;
             }
         }
     }
