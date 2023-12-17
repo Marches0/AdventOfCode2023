@@ -204,6 +204,8 @@ internal class Pipe
             .Single(c => c.GetMovedDirection(this) != fromDirection);
     }
 
+    public bool InMainLoop { get; set; } = false;
+
     public override string ToString()
     {
         return $"{Type} ({X}, {Y}) [{Connections.Count}]";
