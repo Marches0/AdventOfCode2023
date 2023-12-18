@@ -1,1 +1,1 @@
-﻿new Day11.Solver().Run();
+﻿new Day12.Solver().Run();
