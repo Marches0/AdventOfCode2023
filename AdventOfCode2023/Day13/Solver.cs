@@ -6,11 +6,23 @@ public class Solver
 {
     public void Run()
     {
-        var reader = new LavaReader();
+        var reader = new ValleyReader();
 
-        var lavaSites = File.ReadAllLines("test.txt")
+        List<Valley> valleys = File.ReadAllLines("day13_input.txt")
             .ChunkByNewline()
             .Select(reader.Read)
             .ToList();
+
+        var finder = new ReflectionFinder();
+        List<Reflection> reflections = valleys
+            .Select(finder.FindReflection)
+            .ToList();
+
+        var total = reflections
+            .Sum(r => r.Orientation == ReflectionOrientation.Column
+            ? r.RowCol
+            : r.RowCol * 100);
+
+        Console.WriteLine(total);
     }
 }

@@ -5,8 +5,11 @@ public static class EnumerableCharExtensions
     public static string CollapseToString(this IEnumerable<char> value)
     {
         return new string(value.ToArray());
-    }
+    }    
+}
 
+public static class EnumerableStringExtensions
+{
     public static IEnumerable<string[]> ChunkByNewline(this IEnumerable<string> values)
     {
         List<string> current = new();
@@ -25,6 +28,25 @@ public static class EnumerableCharExtensions
         }
 
         yield return current.ToArray();
+    }
+}
+
+public static class EnumerableExtensions
+{
+    public static IEnumerable<List<T>> Rotate<T>(this IEnumerable<IEnumerable<T>> source)
+    {
+        var enumerators = source.Select(e => e.GetEnumerator()).ToArray();
+        try
+        {
+            while (enumerators.All(e => e.MoveNext()))
+            {
+                yield return enumerators.Select(e => e.Current).ToList();
+            }
+        }
+        finally
+        {
+            Array.ForEach(enumerators, e => e.Dispose());
+        }
     }
 }
 
