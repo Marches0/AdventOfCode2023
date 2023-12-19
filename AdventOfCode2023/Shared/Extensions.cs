@@ -6,6 +6,26 @@ public static class EnumerableCharExtensions
     {
         return new string(value.ToArray());
     }
+
+    public static IEnumerable<string[]> ChunkByNewline(this IEnumerable<string> values)
+    {
+        List<string> current = new();
+
+        foreach (string value in values)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                yield return current.ToArray();
+                current = new();
+            }
+            else
+            {
+                current.Add(value);
+            }
+        }
+
+        yield return current.ToArray();
+    }
 }
 
 public static class StringExtensions
